@@ -6,20 +6,6 @@ namespace Lists
 {
     public static class Program
     {
-        public static int Registers(string inp)
-        {
-            int register1 = 0;
-            int len = inp.Length;
-            for (int i = 0; i < len; i++)
-            {
-                if (inp[i] == '(')
-                {
-                    register1++;
-                }
-            }
-            return register1;
-        }
-
         public static List<double> Number(string inp)
         {
             List<double> num = new List<double>();
@@ -54,33 +40,13 @@ namespace Lists
             return num;
         }
 
-        public static List<char> NewLists(int inp)
+        public static List<(char,int)> Operation(string inp)
         {
-            List<char> list = new List<char>(inp);
-            return list;
-        }
-        public static List<List<char>> Operation(string inp)
-        {
-            List<List<char>> op = new List<List<char>>(4);
+            List<(char,int)> op = new List<(char,int)>();
             inp += ' ';
             int len = inp.Length - 1;
             int register = 0;
-            int register1 = Registers(inp) + 1;
-
-            for (int i = 0; i < len; i++)
-            {
-                if (inp[i] == '(')
-                {
-                    register1++;
-                }
-            }
-
             
-            for (int i = 0; i < register1; i++)
-            {
-                op.Add(NewLists(i));      
-            }
-
             for (int i = 0; i < len; i++)
             {
                 if ((Char.IsDigit(inp[i]) == false) && (inp[i] != '.') && (inp[i] != ' '))
@@ -88,21 +54,19 @@ namespace Lists
                     
                     if (inp[i] == '(')
                     {
-                        register++;
+                        register += 2;
                     }
                     if (inp[i] == '*' || inp[i] == '/')
                     {
-                        
-                        op[register].Add(inp[i]);
-                        
+                        op.Add((inp[i], register + 1));
                     }
                     if (inp[i] == '+' || inp[i] == '-')
                     {
-                        op[register].Add(inp[i]);
+                        op.Add((inp[i], register));
                     }
                     if (inp[i] == ')')
                     {
-                        register--;
+                        register -= 2;
                     }
                 }
             }
@@ -124,52 +88,43 @@ namespace Lists
         {
             string input = Console.ReadLine();
             List<double> numbers = Number(input);
-            List<List<char>> operations = Operation(input);
-            for (int i = operations.Count - 1; i >= 0; i--)
+            List<(char,int)> operations = Operation(input);
+            while (operations.Count > 0)
             {
-                while (operations[i].Count > 0)
+                int operIndex = -1;
+                int max = 0;
+                for (int i = 0; i < operations.Count; i++)
                 {
-                    int operIndex = -1;
-                    if (operations[i].Contains('*') || operations[i].Contains('/'))
+                    if (max < operations[i].Item2)
                     {
-                        int multipleIndex = operations[i].IndexOf('*');
-                        int devideIndex = operations[i].IndexOf('/');
-                        operIndex = devideIndex != -1 && multipleIndex != -1
-                            ? multipleIndex > devideIndex
-                                ? devideIndex
-                                : multipleIndex
-                            : devideIndex == -1
-                                ? multipleIndex
-                                : devideIndex;
+                        max = operations[i].Item2;
+                        operIndex = i;
                     }
-                    else
+                    if (max == operations[i].Item2)
                     {
-                        if (operations[i].Contains('+'))
+                        if (operations[i].Item1 == '*' || operations[i].Item1 == '/')
                         {
-                            operIndex = operations[i].IndexOf('+');
-                        }
-                        else
-                        {
-                            operIndex = operations[i].IndexOf('-');
+                            operIndex = i;
                         }
                     }
-
-                    if (operIndex == -1)
-                    {
-                        operIndex = 0;
-                    }
-                    
-                    char op = operations[i][operIndex];
-                    double num1 = numbers[operIndex + i];
-                    double num2 = numbers[operIndex + 1 + i];
-                    double result = Calculate(op, num1, num2);
-                    numbers.RemoveAt(operIndex + 1 + i);
-                    numbers.RemoveAt(operIndex + i);
-                    operations[i].RemoveAt(operIndex);
-                    numbers.Insert(operIndex + i, result);
                 }
+
+                if (operIndex == -1)
+                {
+                        operIndex = 0;
+                }
+                    
+                char op = operations[operIndex].Item1;
+                double num1 = numbers[operIndex];
+                double num2 = numbers[operIndex + 1];
+                double result = Calculate(op, num1, num2);
+                numbers.RemoveAt(operIndex + 1);
+                numbers.RemoveAt(operIndex);
+                operations.RemoveAt(operIndex);
+                numbers.Insert(operIndex, result);
+                
             }
-                Console.WriteLine(numbers[0]);
+            Console.WriteLine(numbers[0]);
         }
     }
 }
