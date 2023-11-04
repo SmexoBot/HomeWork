@@ -74,6 +74,7 @@ namespace Lists
                             op.Push(inp[i]);
                         }
                     }
+
                     else if (inp[i] == ')')
                     {
                         while (op.Peek() != '(')
@@ -94,6 +95,7 @@ namespace Lists
                 num.Add(op.Pop());
             }
             return num;
+
         }
         public static void PrintList(List<object> list)
         {
