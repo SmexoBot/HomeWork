@@ -19,7 +19,6 @@ namespace Lists
                 else
                 {
                     return inp.Substring(i, index);
-                    //i = i + index - 1;
                 }
             }
         }
