@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
@@ -7,6 +8,22 @@ namespace Lists
 {
     public static class Program
     {
+        public static string Numbers(int i, int index, string inp)
+        {
+            while (true)
+            {
+                if (Char.IsDigit(inp[i + index]) || inp[i + index] == ',')
+                {
+                    index++;
+                }
+                else
+                {
+                    return inp.Substring(i, index);
+                    //i = i + index - 1;
+                }
+            }
+        }
+
         public static List<object> ToRpn(string inp)
         {
             inp = inp + ' ';
@@ -24,21 +41,9 @@ namespace Lists
                 }
                 else if (Char.IsDigit(inp[i]))
                 {
-                    int index = 1;
-                    while (true)
-                    {
-                        if (Char.IsDigit(inp[i + index]) || inp[i + index] == ',')
-                        {
-                            index++;
-                        }
-                        else
-                        {
-                            num.Add(Convert.ToDouble(inp.Substring(i, index)));
-                            i = i + index - 1;
-                            break;
-                        }
-                    }
-
+                    string str = Numbers(i, 1, inp);
+                    num.Add(Convert.ToDouble(str));
+                    i = i + str.Length - 1;
                 }
                 else
                 {
@@ -75,7 +80,6 @@ namespace Lists
                             op.Push(inp[i]);
                         }
                     }
-
                     else if (inp[i] == ')')
                     {
                         while (op.Peek() != '(')
@@ -84,7 +88,6 @@ namespace Lists
                         }
                         op.Pop();
                     }
-
                     else
                     {
                         op.Push(inp[i]);
@@ -98,6 +101,7 @@ namespace Lists
             return num;
 
         }
+
         public static void PrintList(List<object> list)
         {
             foreach (object o in list)
