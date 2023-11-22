@@ -6,8 +6,90 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Lists
 {
+    public class Tocen
+    {
+
+    }
+
+    public class Operation : Tocen
+    {
+        public char Symbol;
+        public int Priority;
+    }
+
+    public class Parenthesis : Tocen
+    {
+        public bool IsOpen;
+    }
+
+    public class Numberss : Tocen
+    {
+        public double Number;
+    }
     public static class Program
     {
+        public static List<Tocen> List(string inp)
+        {
+            inp = inp + ' ';
+            inp = inp.Replace('.', ',');
+            int len = inp.Length - 1;
+            List<Tocen> list = new List<Tocen>();
+
+            for (int i = 0; i < len; i++)
+            {
+                if (inp[i] == ' ')
+                {
+                    continue;
+                }
+                else if (char.IsDigit(inp[i]))
+                {
+                    string str = Numbers(i, 1, inp);
+                    Numberss num = new Numberss();
+                    num.Number = Convert.ToDouble(str);
+                    list.Add(num);
+                    i = i + str.Length - 1;
+                }
+                else
+                {
+                    if (inp[i] == '(')
+                    {
+                        Parenthesis parenthesis = new Parenthesis();
+                        parenthesis.IsOpen = true;
+                        list.Add(parenthesis);
+                    }
+                    else if (inp[i] == ')')
+                    {
+                        Parenthesis parenthesis = new Parenthesis();
+                        parenthesis.IsOpen = false;
+                        list.Add(parenthesis);
+                    }
+                    else
+                    {
+                        Operation op = new Operation();
+                        if (inp[i] == '*')
+                        {
+                            op.Symbol = '*';
+                            op.Priority = 1;
+                        }
+                        else if (inp[i] == '/')
+                        {
+                            op.Symbol = '/';
+                            op.Priority = 1;
+                        }
+                        else if (inp[i] == '+')
+                        {
+                            op.Symbol = '+';
+                        }
+                        else
+                        {
+                            op.Symbol = '-';
+                        }
+                        list.Add(op);
+                    }
+                }
+            }
+            return list;
+        }
         public static string Numbers(int i, int index, string inp)
         {
             while (true)
@@ -23,82 +105,18 @@ namespace Lists
             }
         }
 
-        public static List<object> ToRpn(string inp)
+        public static List<Tocen> ToRpn(List<Tocen> inp)
         {
-            inp = inp + ' ';
-            inp = inp.Replace('.', ',');
-            int len = inp.Length - 1;
-            List<object> num = new List<object>();
+            List <Tocen> list = new List<Tocen>();
             Stack<char> op = new Stack<char>();
             op.Push(' ');
+            int len = list.Count();
 
             for (int i = 0; i < len; i++)
             {
-                if (inp[i] == ' ')
-                {
-                    continue;
-                }
-                else if (Char.IsDigit(inp[i]))
-                {
-                    string str = Numbers(i, 1, inp);
-                    num.Add(Convert.ToDouble(str));
-                    i = i + str.Length - 1;
-                }
-                else
-                {
-                    if (op.Peek() == ' ')
-                    {
-                        op.Push(inp[i]);
-                    }
 
-                    else if (inp[i] == '(')
-                    {
-                        op.Push(inp[i]);
-                    }
-
-                    else if ((op.Peek() == '+' || op.Peek() == '-') && (inp[i] == '+' || inp[i] == '-'))
-                    {
-                        num.Add(op.Pop());
-                        op.Push(inp[i]);
-                    }
-                   
-                    else if ((op.Peek() == '*' || op.Peek() == '/'))
-                    {
-                        if ((inp[i] != '*' && inp[i] != '/'))
-                        {
-                            while (op.Peek() != '+' && op.Peek() != '-' && op.Peek() != ' ')
-                            {
-                                num.Add(op.Pop());
-                            }
-                            num.Add(op.Pop());
-                            op.Push(inp[i]);
-                        }
-                        else if (inp[i] == '*' || inp[i] == '/')
-                        {
-                            num.Add(op.Pop());
-                            op.Push(inp[i]);
-                        }
-                    }
-                    else if (inp[i] == ')')
-                    {
-                        while (op.Peek() != '(')
-                        {
-                            num.Add(op.Pop());
-                        }
-                        op.Pop();
-                    }
-                    else
-                    {
-                        op.Push(inp[i]);
-                    }
-                }   
             }
-            while (op.Count != 1)
-            {
-                num.Add(op.Pop());
-            }
-            return num;
-
+            
         }
 
         public static void PrintList(List<object> list)
@@ -127,10 +145,10 @@ namespace Lists
         public static void Main()
         {
             string inp = Console.ReadLine();
-            List<object> expression = ToRpn(inp);
+            List<Tocen> expression = ToRpn(List(inp));
             PrintList(expression);
             char check = ' ';
-            
+            /*
             for (int i = 0; i < expression.Count; i++)
             {
                 if (Object.ReferenceEquals(expression[i].GetType(), check.GetType()))
@@ -145,6 +163,7 @@ namespace Lists
                 } 
             }
             Console.WriteLine(expression[0]);
+            */
         }
     }
 }
