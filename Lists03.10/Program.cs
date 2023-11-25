@@ -13,8 +13,8 @@ namespace Lists
 
     public class Operation : Tocen
     {
-        public char Symbol;
         public int Priority;
+        public char Symbol;
     }
 
     public class Parenthesis : Tocen
@@ -26,6 +26,7 @@ namespace Lists
     {
         public double Number;
     }
+
     public static class Program
     {
         public static List<Tocen> GetList(string inp)
@@ -87,6 +88,7 @@ namespace Lists
             }
             return op;
         }
+
         public static Parenthesis GetParenthesis(char inp)
         {
             Parenthesis parenthesis = new Parenthesis();
@@ -128,31 +130,43 @@ namespace Lists
                 {
                     list.Add(inp[i]);
                 }
-                else if (inp[i] is Operation || inp[i] is Parenthesis)
+                else
                 {
-                    if (op.Count == 0)
+                    if (inp[i] is Parenthesis)
                     {
-                        op.Push(inp[i]);
-                    }
-                    else if (inp[i] is Parenthesis && ((Parenthesis)inp[i]).IsOpen)
-                    {
-                        op.Push(inp[i]);
-                    }
-                    else if (inp[i] is Parenthesis && !((Parenthesis)inp[i]).IsOpen)
-                    {
-                        while (!(op.Peek() is Parenthesis))
+                        if (((Parenthesis)inp[i]).IsOpen)
                         {
-                            list.Add(op.Pop());
+                            op.Push(inp[i]);
+                        }
+                        else
+                        {
+                            while (op.Peek() is Operation)
+                            {
+                                list.Add(op.Pop());
+                            }
+                            op.Pop();
                         }
                     }
-                    else if (((Operation)op.Peek()).Priority == ((Operation)inp[i]).Priority || ((Operation)op.Peek()).Priority > ((Operation)inp[i]).Priority)
+                    else if (op.Count() > 0 && op.Peek() is Parenthesis)
                     {
-                        list.Add(op.Pop());
                         op.Push(inp[i]);
                     }
                     else
                     {
-                        op.Push(inp[i]);
+                        Operation operation = (Operation)inp[i];
+                        if (op.Count() == 0)
+                        {
+                            op.Push(inp[i]);
+                        }
+                        else if (((Operation)op.Peek()).Priority == operation.Priority || ((Operation)op.Peek()).Priority > operation.Priority)
+                        {
+                            list.Add(op.Pop());
+                            op.Push(operation);
+                        }
+                        else
+                        {
+                            op.Push(operation);
+                        }
                     }
                 }
             }
@@ -193,11 +207,8 @@ namespace Lists
             return 0;
         }
 
-        public static void Main()
+        public static double GetResult(List<Tocen> expression)
         {
-            string inp = Console.ReadLine();
-            List<Tocen> expression = ToRpn(GetList(inp));
-            PrintList(expression);
             Stack<Numbers> number = new Stack<Numbers>();
 
             for (int i = 0; i < expression.Count(); i++)
@@ -211,28 +222,23 @@ namespace Lists
                     double num2 = number.Pop().Number;
                     double num1 = number.Pop().Number;
                     char op = ((Operation)(expression[i])).Symbol;
+
                     Numbers res = new Numbers();
                     res.Number = Calculate(op, num1, num2);
                     number.Push(res);
                 }
             }
-            Console.WriteLine(number.Pop().Number);
-            /*
-            for (int i = 0; i < expression.Count; i++)
-            {
-                if (Object.ReferenceEquals(expression[i].GetType(), check.GetType()))
-                {
-                    double num1 = (double)expression[i - 2];
-                    double num2 = (double)expression[i - 1];
-                    double result = Calculate((char)expression[i], num1, num2);
-                    expression.RemoveAt(i);
-                    expression.RemoveAt(i - 1);
-                    expression[i - 2] = result;
-                    i -= 3;
-                } 
-            }
-            Console.WriteLine(expression[0]);
-            */
+            return number.Pop().Number;
+        }
+
+        public static void Main()
+        {
+            string inp = Console.ReadLine();
+            List<Tocen> expression = ToRpn(GetList(inp));
+            PrintList(expression);
+            double result = GetResult(expression);
+            
+            Console.WriteLine(result);
         }
     }
 }
