@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Data.Common;
 using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
@@ -15,6 +16,15 @@ namespace Lists
     {
         public int Priority;
         public char Symbol;
+        public static bool operator>=(Operation op1, Operation op2)
+        {
+            return op1.Priority >= op2.Priority;
+        }
+        
+        public static bool operator<=(Operation op1, Operation op2)
+        {
+            return op1.Priority <= op2.Priority;
+        }
     }
 
     public class Parenthesis : Tocen
@@ -158,7 +168,7 @@ namespace Lists
                         {
                             op.Push(inp[i]);
                         }
-                        else if (((Operation)op.Peek()).Priority == operation.Priority || ((Operation)op.Peek()).Priority > operation.Priority)
+                        else if ((Operation)op.Peek() >= operation)
                         {
                             list.Add(op.Pop());
                             op.Push(operation);
@@ -221,7 +231,7 @@ namespace Lists
                 {
                     double num2 = number.Pop().Number;
                     double num1 = number.Pop().Number;
-                    char op = ((Operation)(expression[i])).Symbol;
+                    char op = ((Operation)expression[i]).Symbol;
 
                     Numbers res = new Numbers();
                     res.Number = Calculate(op, num1, num2);
@@ -237,7 +247,6 @@ namespace Lists
             List<Tocen> expression = ToRpn(GetList(inp));
             PrintList(expression);
             double result = GetResult(expression);
-            
             Console.WriteLine(result);
         }
     }
