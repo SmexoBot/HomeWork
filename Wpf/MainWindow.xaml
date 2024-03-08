@@ -6,7 +6,19 @@
         xmlns:local="clr-namespace:Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid Background="#FFC4E4FF" RenderTransformOrigin="0.592,0.492">
+        <Button x:Name="butCulculate" Content="Вычислить" Click="Button_Click" Margin="64,170,587,0" FontFamily="Verdana" FontWeight="Normal" BorderThickness="1,1,1,1" ClipToBounds="True" RenderTransformOrigin="0.548,-0.506" VerticalAlignment="Top" Height="43"/>
+        <TextBlock x:Name="txbInput" HorizontalAlignment="Left" Height="28" Margin="260,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="293" FontFamily="Verdana" Foreground="Black" SnapsToDevicePixels="True" ClipToBounds="True">
+            <TextBlock.Background>
+                <SolidColorBrush Color="White"/>
+            </TextBlock.Background><Run Language="ru-ru"/></TextBlock>
+        <Label x:Name="lbOutput" HorizontalAlignment="Left" Height="31" Margin="260,213,0,0" VerticalAlignment="Top" Width="134" FontFamily="Verdana" Background="White">
+            <Label.Effect>
+                <BlurEffect/>
+            </Label.Effect>
+        </Label>
+        <Label Content="Введите выражение:" HorizontalAlignment="Left" Height="45" Margin="257,125,0,0" VerticalAlignment="Top" Width="208" FontFamily="Verdana"/>
+        <Label Content="Ответ:" HorizontalAlignment="Left" Height="33" Margin="260,184,0,0" VerticalAlignment="Top" Width="134" FontFamily="Verdana"/>
 
     </Grid>
 </Window>
