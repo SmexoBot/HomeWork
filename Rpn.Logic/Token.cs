@@ -2,7 +2,7 @@
 
 namespace RpnLogic
 {
-    public class Tocen
+    public class Token
     {
 
     }

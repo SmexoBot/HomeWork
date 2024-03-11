@@ -2,7 +2,7 @@
 
 namespace RpnLogic
 {
-    public class Parenthesis : Tocen
+    public class Parenthesis : Token
     {
         public bool IsOpen;
     }

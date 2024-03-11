@@ -1,7 +1,7 @@
 ﻿
 namespace RpnLogic
 {
-    public class Operation : Tocen
+    public class Operation : Token
     {
         public int Priority;
         public char Symbol;

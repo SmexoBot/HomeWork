@@ -3,7 +3,7 @@
 
 namespace RpnLogic
 {
-    public class Numbers : Tocen
+    public class Numbers : Token
     {
         public double Number;
     }

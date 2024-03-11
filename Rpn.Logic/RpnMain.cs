@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rpn.Logic;
+using System;
 
 namespace RpnLogic
 {
@@ -6,17 +7,16 @@ namespace RpnLogic
     {
         public double RpnCulculate(string inp)
         {
-            List<Tocen> list = ToRpn(GetList(inp));
+            List<Token> list = ToRpn(GetList(inp));
             return GetResult(list);
         }
 
-        private List<Tocen> GetList(string inp)
+        private List<Token> GetList(string inp)
         {
             inp = inp + ' ';
             inp = inp.Replace('.', ',');
             int len = inp.Length - 1;
-            List<Tocen> list = new List<Tocen>();
-
+            List<Token> list = new List<Token>();
             for (int i = 0; i < len; i++)
             {
                 if (inp[i] == ' ')
@@ -26,10 +26,15 @@ namespace RpnLogic
                 else if (char.IsDigit(inp[i]))
                 {
                     string str = GetNumbers(i, 1, inp);
-                    Numbers num = new Numbers();
-                    num.Number = Convert.ToDouble(str);
-                    list.Add(num);
+                    Numbers number = new Numbers();
+                    number.Number = Convert.ToDouble(str);
+                    list.Add(number);
                     i = i + str.Length - 1;
+                }
+                else if (char.IsLetter(inp[i]))
+                {
+                    Variable varible = new Variable();
+                    varible.varible = inp[i];
                 }
                 else
                 {
@@ -99,12 +104,11 @@ namespace RpnLogic
             }
         }
 
-        private  List<Tocen> ToRpn(List<Tocen> inp)
+        private  List<Token> ToRpn(List<Token> inp)
         {
-            List<Tocen> list = new List<Tocen>();
-            Stack<Tocen> op = new Stack<Tocen>();
+            List<Token> list = new List<Token>();
+            Stack<Token> op = new Stack<Token>();
             int len = inp.Count();
-
             for (int i = 0; i < len; i++)
             {
                 if (inp[i] is Numbers)
@@ -171,7 +175,7 @@ namespace RpnLogic
             return 0;
         }
 
-        private  double GetResult(List<Tocen> expression)
+        private  double GetResult(List<Token> expression)
         {
             Stack<Numbers> number = new Stack<Numbers>();
 
@@ -186,7 +190,6 @@ namespace RpnLogic
                     double num2 = number.Pop().Number;
                     double num1 = number.Pop().Number;
                     char op = ((Operation)expression[i]).Symbol;
-
                     Numbers res = new Numbers();
                     res.Number = Calculate(op, num1, num2);
                     number.Push(res);

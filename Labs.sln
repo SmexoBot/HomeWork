@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rpn.Consol", "Lists03.10\Rpn.Consol.csproj", "{93A4C316-6F19-45BB-9251-3947498EE134}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rpn.Console", "Lists03.10\Rpn.Console.csproj", "{93A4C316-6F19-45BB-9251-3947498EE134}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rpn.Logic", "Rpn.Logic\Rpn.Logic.csproj", "{3A94F1CB-A507-4DF1-8704-2755D43B8CAB}"
 EndProject
