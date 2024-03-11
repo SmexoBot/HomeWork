@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using RpnLogic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,6 +23,13 @@ namespace Wpf
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            RpnCulculator calcul = new RpnCulculator();
+            double result = calcul.RpnCulculate(txbInput.Text);
+            lblOutput.Content = result;
+        }
+
+        private void txbInput_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
