@@ -16,7 +16,7 @@
     <Compile Update="Parenthesis.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Tocen.cs">
+    <Compile Update="Token.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
