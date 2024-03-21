@@ -1,9 +1,9 @@
 ﻿using RpnLogic;
 
 
-namespace Rpn.Logic
+namespace Rpn.Logic 
 {
-    public class Variable : Token
+    public class Variable : Token 
     {
         public char varible;
     }

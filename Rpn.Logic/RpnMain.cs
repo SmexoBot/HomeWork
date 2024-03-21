@@ -5,9 +5,11 @@ namespace RpnLogic
 {
     public class RpnCulculator
     {
-        public double RpnCulculate(string inp)
+        public double RpnCulculate(string inp, string variableS)
         {
-            List<Token> list = ToRpn(GetList(inp));
+            variableS = variableS.Replace('.', ',');
+            double variableD = Convert.ToDouble(variableS);
+            List<Token> list = ToRpn(GetList(inp), variableD);
             return GetResult(list);
         }
 
@@ -35,6 +37,7 @@ namespace RpnLogic
                 {
                     Variable varible = new Variable();
                     varible.varible = inp[i];
+                    list.Add(varible);
                 }
                 else
                 {
@@ -104,14 +107,20 @@ namespace RpnLogic
             }
         }
 
-        private  List<Token> ToRpn(List<Token> inp)
+        private  List<Token> ToRpn(List<Token> inp, double variable)
         {
             List<Token> list = new List<Token>();
             Stack<Token> op = new Stack<Token>();
             int len = inp.Count();
             for (int i = 0; i < len; i++)
             {
-                if (inp[i] is Numbers)
+                if (inp[i] is Variable)
+                {
+                    Numbers variabl = new Numbers();
+                    variabl.Number = variable;
+                    list.Add(variabl);
+                }
+                else if (inp[i] is Numbers)
                 {
                     list.Add(inp[i]);
                 }
