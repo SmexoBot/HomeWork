@@ -25,7 +25,7 @@ namespace Wpf
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RpnCulculator calcul = new RpnCulculator();
-            double result = calcul.RpnCulculate(txbInput.Text);
+            double result = calcul.RpnCulculate(txbInput.Text, txbVariable.Text);
             lblOutput.Content = result;
         }
 
