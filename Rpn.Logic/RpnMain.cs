@@ -5,10 +5,8 @@ namespace RpnLogic
 {
     public class RpnCulculator
     {
-        public double RpnCulculate(string inp, string variableS)
+        public double RpnCulculate(string inp, int variableD)
         {
-            variableS = variableS.Replace('.', ',');
-            double variableD = Convert.ToDouble(variableS);
             List<Token> list = ToRpn(GetList(inp), variableD);
             return GetResult(list);
         }

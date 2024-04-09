@@ -6,14 +6,24 @@
         xmlns:local="clr-namespace:Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid Background="#FFC4E4FF" RenderTransformOrigin="0.592,0.492">
-        <Button x:Name="butCulculate" Content="Вычислить" Click="Button_Click" Margin="64,180,587,0" FontFamily="Verdana" FontWeight="Normal" BorderThickness="1,1,1,1" ClipToBounds="True" RenderTransformOrigin="0.548,-0.506" VerticalAlignment="Top" Height="43"/>
-        <Label Content="Введите выражение:" HorizontalAlignment="Left" Height="45" Margin="256,81,0,0" VerticalAlignment="Top" Width="208" FontFamily="Verdana"/>
-        <Label Content="Ответ:" HorizontalAlignment="Left" Height="33" Margin="256,233,0,0" VerticalAlignment="Top" Width="134" FontFamily="Verdana"/>
-        <TextBox x:Name="txbInput" HorizontalAlignment="Left" Height="38" Margin="256,111,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="208" FontFamily="Verdana" TextChanged="txbInput_TextChanged"/>
-        <Label x:Name="lblOutput" Content="" HorizontalAlignment="Left" Height="37" Margin="256,262,0,0" VerticalAlignment="Top" Width="208" Background="White" FontFamily="Verdana"/>
-        <TextBox x:Name="txbVariable" HorizontalAlignment="Left" Height="37" Margin="256,186,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="208" FontFamily="Verdana"/>
-        <Label HorizontalAlignment="Left" Height="32" Margin="253,154,0,0" VerticalAlignment="Top" Width="303" Content="Введите значение переменой:" FontFamily="Verdana"/>
+    <Grid Background="#FFC4E4FF" RenderTransformOrigin="0.592,0.492" Margin="0,0,0,-225">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="98*"/>
+            <ColumnDefinition Width="21*"/>
+            <ColumnDefinition Width="41*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="butCulculate" Content="Обновить" Click="Button_Click" Margin="55,371,0,0" FontFamily="Verdana" FontWeight="Normal" BorderThickness="1,1,1,1" ClipToBounds="True" RenderTransformOrigin="0.548,-0.506" VerticalAlignment="Top" Height="43" HorizontalAlignment="Left" Width="128" Grid.Column="2"/>
+        <TextBox x:Name="TxBEnd" HorizontalAlignment="Left" Margin="48,154,0,0" TextWrapping="Wrap" Width="142" FontFamily="Verdana" TextChanged="txbInput_TextChanged" Height="38" VerticalAlignment="Top" Grid.Column="2"/>
+        <TextBox x:Name="TxBStep" HorizontalAlignment="Left" Height="37" Margin="48,231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="143" FontFamily="Verdana" Grid.Column="2"/>
+        <TextBox x:Name="TxBStart" HorizontalAlignment="Left" Height="38" Margin="48,51,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="143" FontFamily="Verdana" Grid.Column="2"/>
+        <TextBox x:Name="TxBScale" HorizontalAlignment="Left" Height="38" Margin="48,316,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="143" FontFamily="Verdana" Grid.Column="2"/>
+        <Label Content="Начало" HorizontalAlignment="Left" Height="34" Margin="61,17,0,0" VerticalAlignment="Top" Width="116" Grid.Column="2"/>
+        <Label Content="Конец" HorizontalAlignment="Left" Height="41" Margin="61,108,0,0" VerticalAlignment="Top" Width="116" Grid.Column="2"/>
+        <Label Content="Шаг" HorizontalAlignment="Left" Height="34" Margin="61,197,0,0" VerticalAlignment="Top" Width="116" Grid.Column="2"/>
+        <Label Content="Масштаб" Height="34" Margin="61,277,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="116" Grid.Column="2"/>
+        <Image x:Name="ImGraph" HorizontalAlignment="Left" Margin="10,60,0,0" Width="588" OpacityMask="White" Height="588" VerticalAlignment="Top" Grid.ColumnSpan="3"/>
+        <TextBox x:Name="TxBInput" HorizontalAlignment="Left" Height="28" Margin="112,32,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="477" FontFamily="Verdana" Grid.ColumnSpan="2"/>
+        <Label Content="Ведите выражение:" HorizontalAlignment="Left" Margin="123,0,0,617" Width="227" FontFamily="Verdana"/>
 
     </Grid>
 </Window>
