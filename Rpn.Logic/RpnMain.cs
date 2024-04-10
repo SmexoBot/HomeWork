@@ -5,19 +5,35 @@ namespace RpnLogic
 {
     public class RpnCulculator
     {
-        public double RpnCulculate(string inp, int variableD)
+        public double RpnCulculate(string inp, double variableD)
         {
             List<Token> list = ToRpn(GetList(inp), variableD);
-            return GetResult(list);
+            if (inp[0] == '-')
+            {
+                return -1*GetResult(list);
+            }
+            else
+            {
+                return GetResult(list);
+            }
         }
 
         private List<Token> GetList(string inp)
         {
             inp = inp + ' ';
             inp = inp.Replace('.', ',');
+            int i;
+            if (inp[0] == '-')
+            {
+                i=1;
+            }
+            else
+            {
+                i=0;
+            }
             int len = inp.Length - 1;
             List<Token> list = new List<Token>();
-            for (int i = 0; i < len; i++)
+            for ( ; i < len; i++)
             {
                 if (inp[i] == ' ')
                 {
