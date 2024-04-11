@@ -211,7 +211,15 @@ namespace RpnLogic
                 else if (expression[i] is Operation)
                 {
                     double num2 = number.Pop().Number;
-                    double num1 = number.Pop().Number;
+                    double num1;
+                    if (!(number.Count == 0))
+                    {
+                        num1 = number.Pop().Number;
+                    }
+                    else 
+                    {
+                        num1 = 0;
+                    }
                     char op = ((Operation)expression[i]).Symbol;
                     Numbers res = new Numbers();
                     res.Number = Calculate(op, num1, num2);

@@ -45,23 +45,36 @@ namespace Wpf
             {
                 int x = i * scale;
                 int y = -1 * scale * (int)calcul.RpnCulculate(TxBInput.Text, i);
+
                 if (Math.Abs(y) < yZero - 1 && Math.Abs(x) < xZero)
                 {
                     bitmap.SetPixel(xZero + x, yZero + y, Colors.Red);
                 }
                 else
                 {
-                    break;
+                    continue;
                 }
                 if (y == yPrevious)
                 {
                     continue;
                 }
-                string lines = $"(x-{xPrevious})*({y}-{yPrevious})/({x}-{xPrevious}) +{yPrevious}";
+                /*string lines = $"(x-{xPrevious})*({y}-{yPrevious})/({x}-{xPrevious}) +{yPrevious}";
                 for (int l = xPrevious; l < x; l++)
                 {
-                    int y1 = -1 * scale * (int)calcul.RpnCulculate(lines, l);
-                    bitmap.SetPixel(l, y1, Colors.Red);
+                    for (int j = 0; j < scale; j++)
+                    {
+                        double lD = l + (double)(j / scale);
+                        int y1 =   scale * (int)Math.Round(calcul.RpnCulculate(lines, lD), MidpointRounding.ToNegativeInfinity);
+                        if (Math.Abs(y1) < yZero && Math.Abs(l) < xZero)
+                        {
+                            bitmap.SetPixel(xZero + l, yZero + y1, Colors.Red);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                */
                 }
                 xPrevious = x;
                 yPrevious = y;
