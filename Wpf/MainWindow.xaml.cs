@@ -53,7 +53,11 @@ namespace Wpf
                 {
                     break;
                 }
-                string lines = $"((x-{xPrevious})*{y-yPrevious})/{x-xPrevious} +{yPrevious}";
+                if (y == yPrevious)
+                {
+                    continue;
+                }
+                string lines = $"(x-{xPrevious})*({y}-{yPrevious})/({x}-{xPrevious}) +{yPrevious}";
                 for (int l = xPrevious; l < x; l++)
                 {
                     int y1 = -1 * scale * (int)calcul.RpnCulculate(lines, l);
@@ -61,6 +65,7 @@ namespace Wpf
                 }
                 xPrevious = x;
                 yPrevious = y;
+               
             }
             ImGraph.Source = bitmap;
         }
