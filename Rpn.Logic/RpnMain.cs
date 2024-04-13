@@ -1,5 +1,6 @@
 ﻿using Rpn.Logic;
 using System;
+using System.ComponentModel.Design;
 
 namespace RpnLogic
 {
@@ -48,7 +49,7 @@ namespace RpnLogic
                     i = i + str.Length - 1;
                 }
                 else if (char.IsLetter(inp[i]))
-                {
+                { 
                     Variable varible = new Variable();
                     varible.varible = inp[i];
                     list.Add(varible);
@@ -184,6 +185,8 @@ namespace RpnLogic
             }
             return list;
         }
+
+
 
         private  double Calculate(char op, double num1, double num2)
         {
