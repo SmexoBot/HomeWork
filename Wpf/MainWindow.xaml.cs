@@ -27,12 +27,7 @@ namespace Wpf
             Painter painter = new Painter();
             int[] array = painter.GetArray(TxBStart.Text, TxBEnd.Text, TxBStep.Text, TxBScale.Text, ImGraph.Width, ImGraph.Height);
             WriteableBitmap bitmap = painter.Paint(TxBInput.Text, array); 
-             ImGraph.Source = bitmap;
-         }
-
-         private void txbInput_TextChanged(object sender, TextChangedEventArgs e)
-         {
-
-         }
+            ImGraph.Source = bitmap;
+        }
     }
  }
