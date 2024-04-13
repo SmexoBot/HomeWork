@@ -25,7 +25,7 @@
         <Label Content="Конец" HorizontalAlignment="Left" Height="41" Margin="61,108,0,0" VerticalAlignment="Top" Width="116" Grid.Column="6" FontFamily="Verdana"/>
         <Label Content="Шаг" HorizontalAlignment="Left" Height="34" Margin="61,197,0,0" VerticalAlignment="Top" Width="116" Grid.Column="6" FontFamily="Verdana"/>
         <Label Content="Масштаб" Height="34" Margin="61,277,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="116" Grid.Column="6" FontFamily="Verdana"/>
-        <Image x:Name="ImGraph" HorizontalAlignment="Left" Width="549" OpacityMask="White" Height="548" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" Margin="33,70,0,0"/>
+        <Image x:Name="ImGraph" HorizontalAlignment="Left" Width="549" OpacityMask="White" Height="549" VerticalAlignment="Top" Grid.Column="1" Grid.ColumnSpan="5" Margin="33,70,0,0"/>
         <TextBox x:Name="TxBInput" HorizontalAlignment="Left" Height="28" Margin="191,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="298" FontFamily="Verdana" Grid.ColumnSpan="5" Grid.Column="1"/>
         <Label Content="Ведите выражение:" HorizontalAlignment="Left" Margin="14,-6,0,773" Width="227" FontFamily="Verdana" Grid.ColumnSpan="2"/>
 
