@@ -19,7 +19,7 @@ namespace Wpf
             int scale = array[3];
             int width = array[4];
             int height = array[5];
-            int xZero = width/2;
+            int xZero = width / 2;
             int yZero = height / 2;
             WriteableBitmap image = BitmapFactory.New(width, height);
             for (int i = 0; i < width; i++)
@@ -28,53 +28,55 @@ namespace Wpf
                 image.SetPixel(height / 2, i, Colors.Black);
             }
             RpnCulculator calcul = new RpnCulculator();
-            int yPrevious =-1 * (int)calcul.RpnCulculate(input, xStart) / scale;
+            int yPrevious = -1 * (int)calcul.RpnCulculate(input, xStart) / scale;
             for (int i = xStart; i < xEnd; i++)
             {
                 int x = i * scale;
                 int y = -1 * (int)calcul.RpnCulculate(input, i) * scale;
                 image = Setter(image, x, y, xZero, yZero);
-                for (int j = x; j <= (i+1)*scale; j++)
-                {
-                    int y0 = -1 * (int)calcul.RpnCulculate(input,j) / scale;
-                    image = Setter(image, j, y0, xZero, yZero);
-                    if (Math.Abs(yPrevious) < yZero)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        for (int k = Math.Abs(y0 - yPrevious); k >= 0; k--)
-                        {
-                            image = Setter(image, j, y0 + k, xZero, yZero);
-                        }
-                    }
-                    yPrevious = y0;
-                }
-                
+                image = DrowLine(image, (i-1)*scale, yPrevious,x,y, xZero,yZero);
+                yPrevious = y;
             }
-            return image;
+            
+                return image;
         }
 
-        public int[] GetArray(string start, string end, string step, string scale, double width, double height )
+
+        public int[] GetArray(string start, string end, string step, string scale, double width, double height)
         {
-            int[] array = new int[6];
-            array[0] = Convert.ToInt32(start);
-            array[1] = Convert.ToInt32(end);
-            array[2] = Convert.ToInt32(step);
-            array[3] = Convert.ToInt32(scale);
-            array[4] = Convert.ToInt32(width);
-            array[5] = Convert.ToInt32(height);
-            return array;
+                int[] array = new int[6];
+                array[0] = Convert.ToInt32(start);
+                array[1] = Convert.ToInt32(end);
+                array[2] = Convert.ToInt32(step);
+                array[3] = Convert.ToInt32(scale);
+                array[4] = Convert.ToInt32(width);
+                array[5] = Convert.ToInt32(height);
+                return array;
         }
 
         private WriteableBitmap Setter(WriteableBitmap image, int x, int y, int xZero, int yZero)
         {
             if (Math.Abs(y) < yZero - 1 && Math.Abs(x) < xZero)
             {
-                image.SetPixel(xZero + x, yZero + y, Colors.Red);
+                    image.SetPixel(xZero + x, yZero + y, Colors.Red);
+            }
+            return image;
+        }
+
+        private WriteableBitmap DrowLine(WriteableBitmap image, int x1, int y1, int x2, int y2, int xZero, int yZero)
+        {
+            RpnCulculator calcul = new RpnCulculator();
+            double k = (double)(y2- y1)/(x2-x1);
+            string line = $"(x - {x1})*{k} + {y2}";
+            for (int i = x1;  i < x2; i++)
+            {
+                int y = (int)calcul.RpnCulculate(line, i);
+                Setter(image, i, y, xZero, yZero);
             }
             return image;
         }
     }
 }
+
+    
+
