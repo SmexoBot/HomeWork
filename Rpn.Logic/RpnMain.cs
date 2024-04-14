@@ -6,10 +6,17 @@ namespace RpnLogic
 {
     public class RpnCulculator
     {
-        public double RpnCulculate(string inp, double variableD)
+        private readonly string equation;
+
+        public RpnCulculator(string input) 
+        { 
+            equation = input;
+        }
+
+        public double RpnCulculate( double variableD)
         {
-            List<Token> list = ToRpn(GetList(inp), variableD);
-            if (inp[0] == '-')
+            List<Token> list = ToRpn(GetList(equation), variableD);
+            if (equation[0] == '-')
             {
                 return -1*GetResult(list);
             }
