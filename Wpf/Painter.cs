@@ -12,37 +12,47 @@ namespace Wpf
 {
     internal class Painter
     {
+
+        private readonly int widthAndHeight;
+
+        public Painter(double input)
+        {
+            widthAndHeight = Convert.ToInt32(input);
+        }
+
         public WriteableBitmap Paint(string input, double[] array)
         {
             double xStart = array[0];
             double xEnd = array[1];
             double step = array[2];
             double scale = array[3];
-            int width = (int)array[4];
-            int height = (int)array[5];
-            int xZero = (int)width / 2;
-            int yZero = (int)height / 2;
-            int yMax = -width;
-            int yMin = height;
-            WriteableBitmap image = BitmapFactory.New(width, height);
+            int yMax = -widthAndHeight;
+            int yMin = widthAndHeight;
+            WriteableBitmap image = BitmapFactory.New(widthAndHeight, widthAndHeight);
             for (double a = xStart*scale; a <= xEnd*scale; a += step*scale)
             {
                 for(int k = -3; k <= 3; k++)
                 {
-                    image = Setter(image, (int)a, k, xZero, yZero, Colors.Black);
+                    image = Setter(image, (int)a, k, Colors.Black);
                 }
             }
-            for (int i = 0; i < width; i++)
+            for (int i = 0; i < widthAndHeight; i++)
             {
-                image.SetPixel(i, width / 2, Colors.Black);
-                image.SetPixel(height / 2, i, Colors.Black);
+                image.SetPixel(i, widthAndHeight / 2, Colors.Black);
+                image.SetPixel(widthAndHeight / 2, i, Colors.Black);
             }
             RpnCulculator calcul = new RpnCulculator(input);
+            int yPrevious = 0;
             for (double i = xStart; i < xEnd; i+= step)
             {
                 double x = i * scale;
                 int y = -1 * (int)Math.Round(calcul.RpnCulculate(i) * scale,MidpointRounding.ToNegativeInfinity);
-                image = Setter(image, (int)x, y, xZero, yZero , Colors.Red);
+                image = Setter(image, (int)x, y, Colors.Red);
+                if(i != xStart)
+                {
+                    DrowLine(image, (int)((i - step) * scale), yPrevious, (int)x, y);
+                }
+                yPrevious = y;
                 if (y > yMax)
                 {
                     yMax = y;
@@ -57,36 +67,52 @@ namespace Wpf
             {
                 for(int k = -3; k <= 3; k++)
                 {
-                    image = Setter(image, (int)k, (int)a, xZero, yZero, Colors.Black);
+                    image = Setter(image, (int)k, (int)a, Colors.Black);
                 }
             }
 
             return image;
         }
 
-
-        public double[] GetArray(string start, string end, string step, string scale, double width, double height)
+        public double[] GetArray(string start, string end, string step, string scale)
         {
-            double[] array = new double[6];
+            double[] array = new double[4];
             array[0] = Convert.ToDouble(start);
             array[1] = Convert.ToDouble(end);
             array[2] = Convert.ToDouble(step);
             array[3] = Convert.ToDouble(scale);
-            array[4] = Convert.ToDouble(width);
-            array[5] = Convert.ToDouble(height);
             return array;
         }
 
-        private WriteableBitmap Setter(WriteableBitmap image, int x, int y, int xZero, int yZero, Color color)
+        private int ToUITransllate(int varible)
         {
-            if (Math.Abs(y) < yZero - 1 && Math.Abs(x) < xZero)
+            return varible + widthAndHeight / 2;
+        }
+
+        private WriteableBitmap Setter(WriteableBitmap image, int x, int y, Color color)
+        {
+            int x1 = ToUITransllate(x);
+            int y1 = ToUITransllate(y);
+            int Zero = ToUITransllate(0);
+            if (Math.Abs(y) < Zero - 1 && Math.Abs(x) < Zero)
             {
-                image.SetPixel(xZero + x, yZero + y, color);
+                image.SetPixel(x1, y1, color);
             }
             return image;
         }
 
-        
+        private WriteableBitmap DrowLine(WriteableBitmap image, int x1, int y1, int x2, int y2)
+        {
+            double ratio = (double)((y2 - y1) / (x2 - x1));
+            string line = $"{y1} + {-1 * ratio}*(x - {x1}) ";
+            RpnCulculator calcul = new RpnCulculator(line);
+            for (int i = x1; i < x2; i++)
+            {
+                int y = (int)(calcul.RpnCulculate(i));
+                image = Setter(image, i, y, Colors.Red);
+            }
+            return image;
+        }
     }
 }
 
