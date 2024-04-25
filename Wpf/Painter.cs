@@ -33,7 +33,7 @@ namespace Wpf
             {
                 for(int k = -3; k <= 3; k++)
                 {
-                    image = Setter(image, (int)a, k, Colors.Black);
+                    image = SetPixel(image, (int)a, k, Colors.Black);
                 }
             }
             for (int i = 0; i < widthAndHeight; i++)
@@ -43,31 +43,29 @@ namespace Wpf
             }
             RpnCulculator calcul = new RpnCulculator(input);
             int yPrevious = 0;
-            for (double i = xStart; i < xEnd; i+= step)
+            for (double i = xStart; i <= xEnd; i+= step)
             {
                 double x = i * scale;
                 int y = -1 * (int)Math.Round(calcul.RpnCulculate(i) * scale,MidpointRounding.ToNegativeInfinity);
-                image = Setter(image, (int)x, y, Colors.Red);
+                image = SetPixel(image, (int)x, y, Colors.Red);
+                int xMath2 = ToUITransllate((int)x);
+                int yMath2 = ToUITransllate(y);
+                int xMath1 = ToUITransllate((int)((i - step) * scale));
+                int yMath1 = ToUITransllate(yPrevious);
                 if(i != xStart)
                 {
-                    DrowLine(image, (int)((i - step) * scale), yPrevious, (int)x, y);
+                    image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
                 }
                 yPrevious = y;
-                if (y > yMax)
-                {
-                    yMax = y;
-                }
-                else if (y < yMin)
-                {
-                    yMin = y;
-                }
+                yMax = (int)Math.Max(yMax, y);
+                yMin = (int)Math.Min(yMin, y);
             }
 
             for(double a = yMin; a < yMax; a+= step * scale)
             {
                 for(int k = -3; k <= 3; k++)
                 {
-                    image = Setter(image, (int)k, (int)a, Colors.Black);
+                    image = SetPixel(image, (int)k, (int)a, Colors.Black);
                 }
             }
 
@@ -89,7 +87,7 @@ namespace Wpf
             return varible + widthAndHeight / 2;
         }
 
-        private WriteableBitmap Setter(WriteableBitmap image, int x, int y, Color color)
+        private WriteableBitmap SetPixel(WriteableBitmap image, int x, int y, Color color)
         {
             int x1 = ToUITransllate(x);
             int y1 = ToUITransllate(y);
@@ -104,12 +102,13 @@ namespace Wpf
         private WriteableBitmap DrowLine(WriteableBitmap image, int x1, int y1, int x2, int y2)
         {
             double ratio = (double)((y2 - y1) / (x2 - x1));
-            string line = $"{y1} + {-1 * ratio}*(x - {x1}) ";
+            string line = $"{y1} + {ratio}* ({x1} - x) ";
+            
             RpnCulculator calcul = new RpnCulculator(line);
             for (int i = x1; i < x2; i++)
             {
                 int y = (int)(calcul.RpnCulculate(i));
-                image = Setter(image, i, y, Colors.Red);
+                image = SetPixel(image, i, y, Colors.Red);
             }
             return image;
         }
