@@ -1,18 +1,14 @@
 ﻿
 namespace RpnLogic
 {
-    public class Operation : Token
+    abstract class Operation : Token
     {
-        public int Priority;
-        public char Symbol;
-        public static bool operator >=(Operation op1, Operation op2)
-        {
-            return op1.Priority >= op2.Priority;
-        }
+        public abstract string Name { get; }
+        public abstract int Priority { get; }
+        public abstract bool IsFunction { get; }
+        public abstract int ArgsNumber { get; }
 
-        public static bool operator <=(Operation op1, Operation op2)
-        {
-            return op1.Priority <= op2.Priority;
-        }
+        public abstract Numbers Execute(params Numbers[] numbers);
+
     }
 }
