@@ -29,13 +29,7 @@ namespace Wpf
             int yMax = -widthAndHeight;
             int yMin = widthAndHeight;
             WriteableBitmap image = BitmapFactory.New(widthAndHeight, widthAndHeight);
-            for (double a = xStart*scale; a <= xEnd*scale; a += step*scale)
-            {
-                for(int k = -3; k <= 3; k++)
-                {
-                    image = SetPixel(image, (int)a, k, Colors.Black);
-                }
-            }
+            image = DrowSerifs(image, xStart*scale, xEnd*scale,step*scale,'x');
             for (int i = 0; i < widthAndHeight; i++)
             {
                 image.SetPixel(i, widthAndHeight / 2, Colors.Black);
@@ -61,13 +55,7 @@ namespace Wpf
                 yMin = (int)Math.Min(yMin, y);
             }
 
-            for(double a = yMin; a < yMax; a+= step * scale)
-            {
-                for(int k = -3; k <= 3; k++)
-                {
-                    image = SetPixel(image, (int)k, (int)a, Colors.Black);
-                }
-            }
+            image = DrowSerifs(image, yMin, yMax, step*scale,'y');
 
             return image;
         }
@@ -99,16 +87,21 @@ namespace Wpf
             return image;
         }
 
-        private WriteableBitmap DrowLine(WriteableBitmap image, int x1, int y1, int x2, int y2)
+        private WriteableBitmap DrowSerifs(WriteableBitmap image, double start, double end, double step, char axis)
         {
-            double ratio = (double)((y2 - y1) / (x2 - x1));
-            string line = $"{y1} + {ratio}* ({x1} - x) ";
-            
-            RpnCulculator calcul = new RpnCulculator(line);
-            for (int i = x1; i < x2; i++)
+            for (double a = start; a <= end; a += step)
             {
-                int y = (int)(calcul.RpnCulculate(i));
-                image = SetPixel(image, i, y, Colors.Red);
+                for (int k = -3; k <= 3; k++)
+                {
+                    if (axis == 'x')
+                    {
+                        image = SetPixel(image, (int)a, k, Colors.Black);
+                    }
+                    else
+                    {
+                        image = SetPixel(image, k,(int)a, Colors.Black);
+                    }
+                }
             }
             return image;
         }
