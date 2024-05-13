@@ -4,6 +4,19 @@ namespace RpnLogic
 {
     public class Parenthesis : Token
     {
-        public bool IsOpen;
+        public readonly bool IsOpen;
+
+        public Parenthesis(char inp)
+        {
+            if (inp == '(')
+            {
+                IsOpen = true;
+            }
+            else
+            {
+                IsOpen = false;
+            }
+        }
+
     }
 }
