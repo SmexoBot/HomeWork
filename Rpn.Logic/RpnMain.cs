@@ -50,22 +50,20 @@ namespace RpnLogic
                 else if (char.IsDigit(inp[i]))
                 {
                     string str = GetNumbers(i, 1, inp);
-                    Numbers number = new Numbers();
-                    number.Number = Convert.ToDouble(str);
+                    Numbers number = new Numbers(str);
                     list.Add(number);
                     i = i + str.Length - 1;
                 }
                 else if (char.IsLetter(inp[i]))
                 { 
-                    Variable varible = new Variable();
-                    varible.varible = inp[i];
+                    Variable varible = new Variable(inp[i]);
                     list.Add(varible);
                 }
                 else
                 {
                     if (inp[i] == '(' || inp[i] == ')')
                     {
-                        list.Add(GetParenthesis(inp[i]));
+                        list.Add(new Parenthesis(inp[i]));
                     }
                     else
                     {
@@ -100,20 +98,6 @@ namespace RpnLogic
             return op;
         }
 
-        private  Parenthesis GetParenthesis(char inp)
-        {
-            Parenthesis parenthesis = new Parenthesis();
-            if (inp == '(')
-            {
-                parenthesis.IsOpen = true;
-            }
-            else
-            {
-                parenthesis.IsOpen = false;
-            }
-            return parenthesis;
-        }
-
         private  string GetNumbers(int i, int index, string inp)
         {
             while (true)
@@ -138,8 +122,7 @@ namespace RpnLogic
             {
                 if (inp[i] is Variable)
                 {
-                    Numbers variabl = new Numbers();
-                    variabl.Number = variable;
+                    Numbers variabl = new Numbers(variable);
                     list.Add(variabl);
                 }
                 else if (inp[i] is Numbers)
@@ -231,8 +214,7 @@ namespace RpnLogic
                         num1 = 0;
                     }
                     char op = ((Operation)expression[i]).Symbol;
-                    Numbers res = new Numbers();
-                    res.Number = Calculate(op, num1, num2);
+                    Numbers res = new Numbers(Calculate(op, num1, num2));
                     number.Push(res);
                 }
             }
