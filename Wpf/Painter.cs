@@ -80,9 +80,12 @@ namespace Wpf
             int x1 = ToUITransllate(x);
             int y1 = ToUITransllate(y);
             int Zero = ToUITransllate(0);
-            if (Math.Abs(y) < Zero - 1 && Math.Abs(x) < Zero)
+            if (y != int.MaxValue && y != int.MinValue && x != int.MinValue && x != int.MaxValue)
             {
-                image.SetPixel(x1, y1, color);
+                if (Math.Abs(y) < Zero - 1 && Math.Abs(x) < Zero)
+                {
+                    image.SetPixel(x1, y1, color);
+                }
             }
             return image;
         }
