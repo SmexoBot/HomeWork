@@ -1,11 +1,13 @@
 ﻿using Rpn.Logic;
 using System;
 using System.ComponentModel.Design;
+using System.Reflection;
 
 namespace RpnLogic
 {
     public class RpnCulculator
     {
+        private static List<Operation> allOperations; 
         private readonly string equation;
 
         public RpnCulculator(string input) 
@@ -56,8 +58,49 @@ namespace RpnLogic
                 }
                 else if (char.IsLetter(inp[i]))
                 { 
-                    Variable varible = new Variable(inp[i]);
-                    list.Add(varible);
+                    int index = 0;
+                    while (true)
+                    {
+                         if (inp[i + index] == 'x' || inp[i + index] == 'y' || inp[i + index] == 'z')
+                        {
+                            if (index != 0)
+                            {
+                                list.Add(CreateOperation(inp.Substring(i, index - 1)));
+                            }
+                            Variable varible = new Variable(inp[i]);
+                            list.Add(varible);
+                            index++;
+                         }
+                        else if (char.IsDigit(inp[i + index]))
+                        {
+                            list.Add(CreateOperation(inp.Substring(i, index - 1)));
+                            string str = GetNumbers(i + index, 1, inp);
+                            Numbers number = new Numbers(str);
+                            list.Add(number);
+                            index += str.Length;
+                        }
+                        else if (inp[i + index] == ')')
+                        {
+                            i += index + 1;
+                            break;
+                        }
+                        else if (inp[i + index] == ';')
+                        {
+                            index++;
+                            string str = GetNumbers(i + index, 1, inp);
+                            Numbers numbers = new Numbers(str);
+                            list.Add(numbers);
+                            index += str.Length;
+                        }
+                        else if (char.IsLetter(inp[i + index]) || inp[i + index] == ';' || inp[i + index] == '(')
+                        {
+                        index++;
+                        }
+                        else
+                        {
+                        break;
+                        }
+                    }                
                 }
                 else
                 {
@@ -67,42 +110,43 @@ namespace RpnLogic
                     }
                     else
                     {
-                        list.Add(GetOperation(inp[i]));
+                        list.Add(CreateOperation(inp[i].ToString()));
                     }
                 }
             }
             return list;
         }
 
-        private  Operation GetOperation(char inp)
+        private  Operation CreateOperation(string name)
         {
-            Operation op = new Operation();
-            if (inp == '*')
+            var op =  FindAvaliableOperattionByName(name);
+            if (op == null)
             {
-                op.Symbol = inp;
-                op.Priority = 1;
+                throw new ArgumentException($"Unknow operation {name}");
             }
-            else if (inp == '/')
-            {
-                op.Symbol = '/';
-                op.Priority = 1;
-            }
-            else if (inp == '+')
-            {
-                op.Symbol = '+';
-            }
-            else
-            {
-                op.Symbol = '-';
-            }
+            
             return op;
+        }
+
+        private Operation FindAvaliableOperattionByName(string name)
+        {
+            if (allOperations == null)
+            {
+                Type parent = typeof(Operation);
+                Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+                var types = allAssemblies.SelectMany(x => x.GetTypes());
+                List<Type> inheritingTypes = types.Where(t => parent.IsAssignableFrom(t) && !t.IsAbstract).ToList();
+
+                allOperations = inheritingTypes.Select(type => (Operation)Activator.CreateInstance(type)).ToList();
+            }
+            return allOperations.FirstOrDefault(op => op.Name.Equals(name));
         }
 
         private  string GetNumbers(int i, int index, string inp)
         {
             while (true)
             {
-                if (Char.IsDigit(inp[i + index]) || inp[i + index] == ',')
+                if (char.IsDigit(inp[i + index]) || inp[i + index] == ',')
                 {
                     index++;
                 }
@@ -179,46 +223,27 @@ namespace RpnLogic
             return list;
         }
 
-
-
-        private  double Calculate(char op, double num1, double num2)
-        {
-            switch (op)
-            {
-                case '*': return num1 * num2;
-                case '/': return num1 / num2;
-                case '+': return num1 + num2;
-                case '-': return num1 - num2;
-            }
-            Console.WriteLine("ERROR");
-            return 0;
-        }
-
         private  double GetResult(List<Token> expression)
         {
             Stack<Numbers> number = new Stack<Numbers>();
 
             for (int i = 0; i < expression.Count(); i++)
             {
-                if (expression[i] is Numbers)
+                Token tocen = expression[i];
+                if (tocen is Numbers)
                 {
                     number.Push((Numbers)expression[i]);
                 }
-                else if (expression[i] is Operation)
+                else if (tocen is Operation)
                 {
-                    double num2 = number.Pop().Number;
-                    double num1;
-                    if (!(number.Count == 0))
+                    Operation op = tocen as Operation;
+                    Numbers[] args = new Numbers[op.ArgsNumber];
+                    for (int j = op.ArgsNumber - 1; j >= 0; j--)
                     {
-                        num1 = number.Pop().Number;
+                        args[j] = number.Pop();
                     }
-                    else 
-                    {
-                        num1 = 0;
-                    }
-                    char op = ((Operation)expression[i]).Symbol;
-                    Numbers res = new Numbers(Calculate(op, num1, num2));
-                    number.Push(res);
+                    Numbers result = op.Execute(args);
+                    number.Push(result);
                 }
             }
             return number.Pop().Number;
