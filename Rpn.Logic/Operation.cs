@@ -10,5 +10,14 @@ namespace RpnLogic
 
         public abstract Numbers Execute(params Numbers[] numbers);
 
+        public static bool operator >=(Operation left, Operation right)
+        {
+            return left.Priority >= right.Priority;
+        }
+
+        public static bool operator <=(Operation left, Operation right)
+        {
+            return (left.Priority <= right.Priority);
+        }
     }
 }
