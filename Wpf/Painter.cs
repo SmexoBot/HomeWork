@@ -48,7 +48,10 @@ namespace Wpf
                 int yMath1 = ToUITransllate(yPrevious);
                 if(i != xStart)
                 {
-                    image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
+                     if (yMath1 != double.MaxValue)
+                    {
+                        image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
+                    }
                 }
                 yPrevious = y;
                 yMax = (int)Math.Max(yMax, y);
