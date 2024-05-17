@@ -256,7 +256,7 @@ namespace RpnLogic
                         {
                             if(number.Peek().Number <= op.MinValue || number.Peek().Number >= op.MaxValue || number.Peek().Number == op.NotEqual)
                             {
-                                return double.MaxValue;
+                                return 0;
                             }
                         }
                         args[j] = number.Pop();
