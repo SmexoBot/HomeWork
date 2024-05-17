@@ -13,6 +13,9 @@ namespace Rpn.Logic
         public override int Priority => 3;
         public override bool IsFunction => true;
         public override int ArgsNumber => 2;
+        public override double MinValue => 0;
+        public override double NotEqual => 1;
+        public override double MaxValue => double.MaxValue;
 
         public override Numbers Execute(params Numbers[] numbers)
         {

@@ -12,7 +12,7 @@ namespace RpnLogic
 
         public RpnCulculator(string input) 
         { 
-            equation = input;
+            equation = input.Trim().ToLower();
         }
 
         public double RpnCulculate( double variableD)
@@ -87,10 +87,18 @@ namespace RpnLogic
                         else if (inp[i + index] == ';')
                         {
                             index++;
-                            string str = GetNumbers(i + index, 1, inp);
-                            Numbers numbers = new Numbers(str);
-                            list.Add(numbers);
-                            index += str.Length;
+                            if (char.IsDigit(inp[i + index]))
+                            {
+                                string str = GetNumbers(i + index, 1, inp);
+                                Numbers numbers = new Numbers(str);
+                                list.Add(numbers);
+                                index += str.Length;
+                            }
+                            else
+                            {
+                                list.Add(new Variable(inp[i + index]));
+                                index++;
+                            }
                         }
                         else if (char.IsLetter(inp[i + index]) || inp[i + index] == ';' || inp[i + index] == '(')
                         {
@@ -107,6 +115,10 @@ namespace RpnLogic
                     if (inp[i] == '(' || inp[i] == ')')
                     {
                         list.Add(new Parenthesis(inp[i]));
+                        if (inp[i] == '(' && inp[i + 1] == '-')
+                        {
+                            list.Add(new Numbers(0));
+                        }
                     }
                     else
                     {
@@ -240,6 +252,13 @@ namespace RpnLogic
                     Numbers[] args = new Numbers[op.ArgsNumber];
                     for (int j = op.ArgsNumber - 1; j >= 0; j--)
                     {
+                        if (op.IsFunction)
+                        {
+                            if(number.Peek().Number <= op.MinValue || number.Peek().Number >= op.MaxValue || number.Peek().Number == op.NotEqual)
+                            {
+                                return double.MaxValue;
+                            }
+                        }
                         args[j] = number.Pop();
                     }
                     Numbers result = op.Execute(args);
