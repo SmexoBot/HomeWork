@@ -10,6 +10,7 @@ namespace RpnLogic
         public abstract double MinValue { get; }
         public abstract double MaxValue { get; }
         public abstract double NotEqual { get; }
+        
 
         public abstract Numbers Execute(params Numbers[] numbers);
 

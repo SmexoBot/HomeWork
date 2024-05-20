@@ -48,7 +48,7 @@ namespace Wpf
                 int yMath1 = ToUITransllate(yPrevious);
                 if(i != xStart)
                 {
-                     if (yMath1 != double.MaxValue)
+                     if (yPrevious != 0)
                     {
                         image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
                     }
@@ -59,6 +59,8 @@ namespace Wpf
             }
 
             image = DrowSerifs(image, yMin, yMax, step*scale,'y');
+
+
 
             return image;
         }
@@ -87,7 +89,14 @@ namespace Wpf
             {
                 if (Math.Abs(y) < Zero - 1 && Math.Abs(x) < Zero)
                 {
-                    image.SetPixel(x1, y1, color);
+                    if (y1 == widthAndHeight / 2)
+                    {
+                        return image;
+                    }
+                    else
+                    {
+                        image.SetPixel(x1, y1, color);
+                    }
                 }
             }
             return image;

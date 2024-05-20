@@ -244,7 +244,15 @@ namespace RpnLogic
                 Token tocen = expression[i];
                 if (tocen is Numbers)
                 {
-                    number.Push((Numbers)expression[i]);
+                    Numbers num = tocen as Numbers;
+                    if (num.Number == 0)
+                    {
+                        number.Push(new Numbers(0));
+                    }
+                    else
+                    {
+                        number.Push((Numbers)expression[i]);
+                    }
                 }
                 else if (tocen is Operation)
                 {
@@ -259,6 +267,7 @@ namespace RpnLogic
                                 return 0;
                             }
                         }
+                        
                         args[j] = number.Pop();
                     }
                     Numbers result = op.Execute(args);
