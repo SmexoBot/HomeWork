@@ -97,7 +97,7 @@ namespace Wpf
         {
             for (double a = start; a <= end; a += step)
             {
-                for (int k = -1; k <= 1; k++)
+                for (int k = -2; k <= 2; k++)
                 {
                     if (axis == 'x')
                     {
