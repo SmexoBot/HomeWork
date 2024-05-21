@@ -41,7 +41,7 @@ namespace Wpf
                 int yMath2 = ToUITransllate(y);
                 int xMath1 = ToUITransllate((int)((i - step) * scale));
                 int yMath1 = ToUITransllate(yPrevious);
-                if(i != xStart)
+                if(i != xStart && yPrevious != -999*scale)
                 {
                     image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
                 }

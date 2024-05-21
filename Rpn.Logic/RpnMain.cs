@@ -264,7 +264,7 @@ namespace RpnLogic
                         {
                             if(number.Peek().Number <= op.MinValue || number.Peek().Number >= op.MaxValue || number.Peek().Number == op.NotEqual)
                             {
-                                return 0;
+                                return 999;
                             }
                         }
                         
