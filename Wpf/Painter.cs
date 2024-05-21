@@ -30,11 +30,6 @@ namespace Wpf
             int yMin = widthAndHeight;
             WriteableBitmap image = BitmapFactory.New(widthAndHeight, widthAndHeight);
             image = DrowSerifs(image, xStart*scale, xEnd*scale,step*scale,'x');
-            for (int i = 0; i < widthAndHeight; i++)
-            {
-                image.SetPixel(i, widthAndHeight / 2, Colors.Black);
-                image.SetPixel(widthAndHeight / 2, i, Colors.Black);
-            }
             RpnCulculator calcul = new RpnCulculator(input);
             int yPrevious = 0;
             for (double i = xStart; i <= xEnd; i+= step)
@@ -48,10 +43,7 @@ namespace Wpf
                 int yMath1 = ToUITransllate(yPrevious);
                 if(i != xStart)
                 {
-                     if (yPrevious != 0)
-                    {
-                        image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
-                    }
+                    image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
                 }
                 yPrevious = y;
                 yMax = (int)Math.Max(yMax, y);
@@ -60,7 +52,11 @@ namespace Wpf
 
             image = DrowSerifs(image, yMin, yMax, step*scale,'y');
 
-
+            for (int i = 0; i < widthAndHeight; i++)
+            {
+                image.SetPixel(i, widthAndHeight / 2, Colors.Black);
+                image.SetPixel(widthAndHeight / 2, i, Colors.Black);
+            }
 
             return image;
         }
