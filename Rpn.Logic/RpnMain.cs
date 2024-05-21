@@ -41,6 +41,7 @@ namespace RpnLogic
             {
                 i=0;
             }
+            int priority = 0;
             int len = inp.Length - 1;
             List<Token> list = new List<Token>();
             for ( ; i < len; i++)
@@ -59,30 +60,38 @@ namespace RpnLogic
                 else if (char.IsLetter(inp[i]))
                 { 
                     int index = 0;
+                    int parenthesisNumber = 0;
+                    int numberLetter = i;
                     while (true)
-                    {
+                    {  
                          if (inp[i + index] == 'x' || inp[i + index] == 'y' || inp[i + index] == 'z')
                         {
-                            if (index != 0)
-                            {
-                                list.Add(CreateOperation(inp.Substring(i, index - 1)));
-                            }
                             Variable varible = new Variable(inp[i]);
                             list.Add(varible);
                             index++;
+                            numberLetter++;
                          }
                         else if (char.IsDigit(inp[i + index]))
                         {
-                            list.Add(CreateOperation(inp.Substring(i, index - 1)));
                             string str = GetNumbers(i + index, 1, inp);
                             Numbers number = new Numbers(str);
                             list.Add(number);
                             index += str.Length;
+                            numberLetter += str.Length;
                         }
-                        else if (inp[i + index] == ')')
+                        else if (inp[i + index] == ')' && parenthesisNumber == 1)
                         {
+                            priority--;
+                            parenthesisNumber--;
                             i += index + 1;
                             break;
+                        }
+                        else if (inp[i + index] == ')' && parenthesisNumber != 0)
+                        {
+                            priority--;
+                            parenthesisNumber--;
+                            index++;
+                            numberLetter++;
                         }
                         else if (inp[i + index] == ';')
                         {
@@ -93,20 +102,36 @@ namespace RpnLogic
                                 Numbers numbers = new Numbers(str);
                                 list.Add(numbers);
                                 index += str.Length;
+                                numberLetter += str.Length;
                             }
                             else
                             {
                                 list.Add(new Variable(inp[i + index]));
                                 index++;
+                                numberLetter++;
                             }
                         }
-                        else if (char.IsLetter(inp[i + index]) || inp[i + index] == ';' || inp[i + index] == '(')
+                        else if (char.IsLetter(inp[i + index]) )
                         {
-                        index++;
+                            index++;
                         }
+                         else if ((inp[i + index] == '('))
+                        {
+                            parenthesisNumber++;
+                            Operation op = CreateOperation(inp.Substring(numberLetter, index - numberLetter));
+                            op = op.ChangePriority(priority, op);
+                            list.Add(op);
+                            index++;
+                            numberLetter = index;
+                            priority++;
+                         }
                         else
                         {
-                        break;
+                            index++;
+                            Operation op = CreateOperation(inp.Substring(numberLetter, index - numberLetter));
+                            op = op.ChangePriority(priority, op);
+                            list.Add(op);
+                            numberLetter = index;
                         }
                     }                
                 }
@@ -114,7 +139,15 @@ namespace RpnLogic
                 {
                     if (inp[i] == '(' || inp[i] == ')')
                     {
-                        list.Add(new Parenthesis(inp[i]));
+                        if(inp[i] == '(')
+                        {
+                            priority++;
+                        }
+                        else
+                        {
+                            priority--;
+                        }
+                            list.Add(new Parenthesis(inp[i]));
                         if (inp[i] == '(' && inp[i + 1] == '-')
                         {
                             list.Add(new Numbers(0));
@@ -122,7 +155,9 @@ namespace RpnLogic
                     }
                     else
                     {
-                        list.Add(CreateOperation(inp[i].ToString()));
+                        Operation op = CreateOperation(inp[i].ToString());
+                        op = op.ChangePriority(priority + 3, op);
+                        list.Add(op);
                     }
                 }
             }
@@ -215,11 +250,14 @@ namespace RpnLogic
                         }
                         else if ((Operation)op.Peek() >= operation)
                         {
-                            while ((Operation)op.Peek() >= operation)
-                            {
-                                list.Add(op.Pop());
+                            if (op.Count() != 0)
+                            { 
+                                while ((Operation)op.Peek() >= operation)
+                                {
+                                    list.Add(op.Pop());
+                                }
                             }
-                                op.Push(operation);
+                             op.Push(operation);
                         }
                         else
                         {

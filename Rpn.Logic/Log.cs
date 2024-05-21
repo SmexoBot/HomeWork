@@ -17,7 +17,6 @@ namespace Rpn.Logic
         public override double NotEqual => 1;
         public override double MaxValue => double.MaxValue;
 
-
         public override Numbers Execute(params Numbers[] numbers)
         {
             double num2 = numbers[0].Number;
