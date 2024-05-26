@@ -19,8 +19,8 @@ namespace Rpn.Logic
 
         public override Numbers Execute(params Numbers[] numbers)
         {
-            double num2 = numbers[0].Number;
-            double num1 = numbers[1].Number;
+            double num1 = numbers[0].Number;
+            double num2 = numbers[1].Number;
             Numbers result = new Numbers(num1 - num2);
             return result;
         }
