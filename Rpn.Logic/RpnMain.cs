@@ -46,7 +46,7 @@ namespace RpnLogic
             List<Token> list = new List<Token>();
             for ( ; i < len; i++)
             {
-                if (inp[i] == ' ')
+                if ( inp[i] == ';' || inp[i] == ' ')
                 {
                     continue;
                 }
@@ -57,103 +57,24 @@ namespace RpnLogic
                     list.Add(number);
                     i = i + str.Length - 1;
                 }
+                else if (inp[i] == 'x' || inp[i] == 'y' || inp[i] == 'z')
+                {
+                    Variable varible = new Variable(inp[i]);
+                    list.Add(varible);
+                }
                 else if (char.IsLetter(inp[i]))
                 {
-                    if (inp[i] == 'x' || inp[i] == 'y' || inp[i] == 'z')
-                    {
-                        Variable varible = new Variable(inp[i]);
-                        list.Add(varible);
-                        continue;
-                    }
-                    int index = 0;
-                    int parenthesisNumber = 0;
-                    int numberLetter = i;
-                    while (true)
-                    {  
-                         if (inp[i + index] == 'x' || inp[i + index] == 'y' || inp[i + index] == 'z')
-                        {
-                            Variable varible = new Variable(inp[i + index]);
-                            list.Add(varible);
-                            index++;
-                            numberLetter++;
-                         }
-                        else if (char.IsDigit(inp[i + index]))
-                        {
-                            string str = GetNumbers(i + index, 1, inp);
-                            Numbers number = new Numbers(str);
-                            list.Add(number);
-                            index += str.Length;
-                            numberLetter += str.Length;
-                        }
-                        else if (inp[i + index] == ')' && parenthesisNumber == 1)
-                        {
-                            priority--;
-                            parenthesisNumber--;
-                            i += index;
-                            break;
-                        }
-                        else if (inp[i + index] == ')')
-                        {
-                            priority--;
-                            parenthesisNumber--;
-                            index++;
-                            numberLetter++;
-                        }
-                        else if (inp[i + index] == ';')
-                        {
-                            index++;
-                            numberLetter++;
-                            if (char.IsDigit(inp[i + index]))
-                            {
-                                string str = GetNumbers(i + index, 1, inp);
-                                Numbers numbers = new Numbers(str);
-                                list.Add(numbers);
-                                index += str.Length;
-                                numberLetter += str.Length;
-                            }
-                            else
-                            {
-                                list.Add(new Variable(inp[i + index]));
-                                index++;
-                                numberLetter++;
-                            }
-                        }
-                        else if (char.IsLetter(inp[i + index]) )
-                        {
-                            index++;
-                        }
-                         else if ((inp[i + index] == '('))
-                        {
-                            parenthesisNumber++;
-                            Operation op = CreateOperation(inp.Substring(numberLetter, index - numberLetter));
-                            op = op.ChangePriority(priority, op);
-                            list.Add(op);
-                            index++;
-                            numberLetter = index;
-                            priority++;
-                         }
-                        else
-                        {
-                            index++;
-                            Operation op = CreateOperation(inp.Substring(numberLetter, index - numberLetter));
-                            if (op is Minus || op is Plus || op is Multiply || op is Devide)
-                            {
-                                op = op.ChangePriority(priority + 3, op);
-                            }
-                            else
-                            {
-                            op = op.ChangePriority(priority, op);
-                            }
-                            list.Add(op);
-                            numberLetter = index;
-                        }
-                    }                
+                    string str = GetOperation(inp, i);
+                    Operation op = CreateOperation(str);
+                    op = op.ChangePriority(priority,op);
+                    i += str.Length - 1;
+                    list.Add(op);
                 }
                 else
                 {
                     if (inp[i] == '(' || inp[i] == ')')
                     {
-                        if(inp[i] == '(')
+                        if (inp[i] == '(')
                         {
                             priority++;
                         }
@@ -161,7 +82,7 @@ namespace RpnLogic
                         {
                             priority--;
                         }
-                            list.Add(new Parenthesis(inp[i]));
+                        list.Add(new Parenthesis(inp[i]));
                         if (inp[i] == '(' && inp[i + 1] == '-')
                         {
                             list.Add(new Numbers(0));
@@ -176,6 +97,22 @@ namespace RpnLogic
                 }
             }
             return list;
+        }
+
+        private string GetOperation(string inp, int start)
+        {
+            int index = 0;
+            while (true)
+            {
+                if (char.IsLetter(inp[start + index]))
+                {
+                    index++;
+                }
+                else
+                {
+                    return inp.Substring(start, index);
+                }
+            }
         }
 
         private  Operation CreateOperation(string name)
