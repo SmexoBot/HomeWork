@@ -250,11 +250,15 @@ namespace RpnLogic
                         }
                         else if ((Operation)op.Peek() >= operation)
                         {
-                            if (op.Count() != 0)
+                            while (op.Count() != 0)
                             { 
-                                while ((Operation)op.Peek() >= operation)
+                                if ((Operation)op.Peek() >= operation)
                                 {
                                     list.Add(op.Pop());
+                                }
+                                else
+                                {
+                                    break;
                                 }
                             }
                              op.Push(operation);
