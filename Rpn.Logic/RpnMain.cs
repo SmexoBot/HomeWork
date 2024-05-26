@@ -58,7 +58,13 @@ namespace RpnLogic
                     i = i + str.Length - 1;
                 }
                 else if (char.IsLetter(inp[i]))
-                { 
+                {
+                    if (inp[i] == 'x' || inp[i] == 'y' || inp[i] == 'z')
+                    {
+                        Variable varible = new Variable(inp[i]);
+                        list.Add(varible);
+                        continue;
+                    }
                     int index = 0;
                     int parenthesisNumber = 0;
                     int numberLetter = i;
@@ -66,7 +72,7 @@ namespace RpnLogic
                     {  
                          if (inp[i + index] == 'x' || inp[i + index] == 'y' || inp[i + index] == 'z')
                         {
-                            Variable varible = new Variable(inp[i]);
+                            Variable varible = new Variable(inp[i + index]);
                             list.Add(varible);
                             index++;
                             numberLetter++;
@@ -83,10 +89,10 @@ namespace RpnLogic
                         {
                             priority--;
                             parenthesisNumber--;
-                            i += index + 1;
+                            i += index;
                             break;
                         }
-                        else if (inp[i + index] == ')' && parenthesisNumber != 0)
+                        else if (inp[i + index] == ')')
                         {
                             priority--;
                             parenthesisNumber--;
@@ -96,6 +102,7 @@ namespace RpnLogic
                         else if (inp[i + index] == ';')
                         {
                             index++;
+                            numberLetter++;
                             if (char.IsDigit(inp[i + index]))
                             {
                                 string str = GetNumbers(i + index, 1, inp);
@@ -129,7 +136,14 @@ namespace RpnLogic
                         {
                             index++;
                             Operation op = CreateOperation(inp.Substring(numberLetter, index - numberLetter));
+                            if (op is Minus || op is Plus || op is Multiply || op is Devide)
+                            {
+                                op = op.ChangePriority(priority + 3, op);
+                            }
+                            else
+                            {
                             op = op.ChangePriority(priority, op);
+                            }
                             list.Add(op);
                             numberLetter = index;
                         }
@@ -156,7 +170,7 @@ namespace RpnLogic
                     else
                     {
                         Operation op = CreateOperation(inp[i].ToString());
-                        op = op.ChangePriority(priority + 3, op);
+                        op = op.ChangePriority(priority, op);
                         list.Add(op);
                     }
                 }
@@ -209,6 +223,7 @@ namespace RpnLogic
             List<Token> list = new List<Token>();
             Stack<Token> op = new Stack<Token>();
             int len = inp.Count();
+
             for (int i = 0; i < len; i++)
             {
                 if (inp[i] is Variable)
