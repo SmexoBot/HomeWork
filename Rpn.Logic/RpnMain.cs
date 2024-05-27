@@ -204,7 +204,7 @@ namespace RpnLogic
                         {
                             while (operationStack.Count() != 0)
                             { 
-                                if ((Operation)operationStack.Peek() >= operation)
+                                if (operationStack is Operation && (Operation)operationStack.Peek() >= operation)
                                 {
                                     list.Add(operationStack.Pop());
                                 }
