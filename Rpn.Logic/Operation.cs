@@ -12,14 +12,14 @@ namespace RpnLogic
         public abstract double NotEqual { get; }
         private int Priority0;
 
-        private void GetPriority(int priority)
+        private void SetPriority(int priority)
         {
             Priority0 = priority;
         }
 
         public Operation ChangePriority(int priority)
         {
-            this.GetPriority(priority);
+            this.SetPriority(priority);
             return(this);
         }
 
