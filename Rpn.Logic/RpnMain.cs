@@ -66,7 +66,7 @@ namespace RpnLogic
                 {
                     string str = GetOperation(inputStr, i);
                     Operation operation = CreateOperation(str);
-                    operation = operation.ChangePriority(priority,operation);
+                    operation = operation.ChangePriority(priority);
                     i += str.Length - 1;
                     list.Add(operation);
                 }
@@ -91,7 +91,7 @@ namespace RpnLogic
                     else
                     {
                         Operation operation = CreateOperation(inputStr[i].ToString());
-                        operation = operation.ChangePriority(priority, operation);
+                        operation = operation.ChangePriority(priority);
                         list.Add(operation);
                     }
                 }

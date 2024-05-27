@@ -17,10 +17,10 @@ namespace RpnLogic
             Priority0 = priority;
         }
 
-        public Operation ChangePriority(int priority, Operation op)
+        public Operation ChangePriority(int priority)
         {
-            op.GetPriority(priority);
-            return(op);
+            this.GetPriority(priority);
+            return(this);
         }
 
         public abstract Numbers Execute(params Numbers[] numbers);
