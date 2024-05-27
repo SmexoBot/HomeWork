@@ -28,12 +28,12 @@ namespace RpnLogic
             }
         }
 
-        private List<Token> GetList(string inp)
+        private List<Token> GetList(string inputStr)
         {
-            inp = inp + ' ';
-            inp = inp.Replace('.', ',');
+            inputStr = inputStr + ' ';
+            inputStr = inputStr.Replace('.', ',');
             int i;
-            if (inp[0] == '-')
+            if (inputStr[0] == '-')
             {
                 i=1;
             }
@@ -42,39 +42,39 @@ namespace RpnLogic
                 i=0;
             }
             int priority = 0;
-            int len = inp.Length - 1;
+            int len = inputStr.Length - 1;
             List<Token> list = new List<Token>();
             for ( ; i < len; i++)
             {
-                if ( inp[i] == ';' || inp[i] == ' ')
+                if ( inputStr[i] == ';' || inputStr[i] == ' ')
                 {
                     continue;
                 }
-                else if (char.IsDigit(inp[i]))
+                else if (char.IsDigit(inputStr[i]))
                 {
-                    string str = GetNumbers(i, 1, inp);
+                    string str = GetNumbers(i, 1, inputStr);
                     Numbers number = new Numbers(str);
                     list.Add(number);
                     i = i + str.Length - 1;
                 }
-                else if (inp[i] == 'x' || inp[i] == 'y' || inp[i] == 'z')
+                else if (inputStr[i] == 'x' || inputStr[i] == 'y' || inputStr[i] == 'z')
                 {
-                    Variable varible = new Variable(inp[i]);
+                    Variable varible = new Variable(inputStr[i]);
                     list.Add(varible);
                 }
-                else if (char.IsLetter(inp[i]))
+                else if (char.IsLetter(inputStr[i]))
                 {
-                    string str = GetOperation(inp, i);
-                    Operation op = CreateOperation(str);
-                    op = op.ChangePriority(priority,op);
+                    string str = GetOperation(inputStr, i);
+                    Operation operation = CreateOperation(str);
+                    operation = operation.ChangePriority(priority,operation);
                     i += str.Length - 1;
-                    list.Add(op);
+                    list.Add(operation);
                 }
                 else
                 {
-                    if (inp[i] == '(' || inp[i] == ')')
+                    if (inputStr[i] == '(' || inputStr[i] == ')')
                     {
-                        if (inp[i] == '(')
+                        if (inputStr[i] == '(')
                         {
                             priority++;
                         }
@@ -82,48 +82,48 @@ namespace RpnLogic
                         {
                             priority--;
                         }
-                        list.Add(new Parenthesis(inp[i]));
-                        if (inp[i] == '(' && inp[i + 1] == '-')
+                        list.Add(new Parenthesis(inputStr[i]));
+                        if (inputStr[i] == '(' && inputStr[i + 1] == '-')
                         {
                             list.Add(new Numbers(0));
                         }
                     }
                     else
                     {
-                        Operation op = CreateOperation(inp[i].ToString());
-                        op = op.ChangePriority(priority, op);
-                        list.Add(op);
+                        Operation operation = CreateOperation(inputStr[i].ToString());
+                        operation = operation.ChangePriority(priority, operation);
+                        list.Add(operation);
                     }
                 }
             }
             return list;
         }
 
-        private string GetOperation(string inp, int start)
+        private string GetOperation(string inputStr, int start)
         {
             int index = 0;
             while (true)
             {
-                if (char.IsLetter(inp[start + index]))
+                if (char.IsLetter(inputStr[start + index]))
                 {
                     index++;
                 }
                 else
                 {
-                    return inp.Substring(start, index);
+                    return inputStr.Substring(start, index);
                 }
             }
         }
 
         private  Operation CreateOperation(string name)
         {
-            var op =  FindAvaliableOperattionByName(name);
-            if (op == null)
+            var operation =  FindAvaliableOperattionByName(name);
+            if (operation == null)
             {
                 throw new ArgumentException($"Unknow operation {name}");
             }
             
-            return op;
+            return operation;
         }
 
         private Operation FindAvaliableOperattionByName(string name)
@@ -140,135 +140,135 @@ namespace RpnLogic
             return allOperations.FirstOrDefault(op => op.Name.Equals(name));
         }
 
-        private  string GetNumbers(int i, int index, string inp)
+        private  string GetNumbers(int i, int index, string inputStr)
         {
             while (true)
             {
-                if (char.IsDigit(inp[i + index]) || inp[i + index] == ',')
+                if (char.IsDigit(inputStr[i + index]) || inputStr[i + index] == ',')
                 {
                     index++;
                 }
                 else
                 {
-                    return inp.Substring(i, index);
+                    return inputStr.Substring(i, index);
                 }
             }
         }
 
-        private  List<Token> ToRpn(List<Token> inp, double variable)
+        private  List<Token> ToRpn(List<Token> inputList, double variable)
         {
             List<Token> list = new List<Token>();
-            Stack<Token> op = new Stack<Token>();
-            int len = inp.Count();
+            Stack<Token> operationStack = new Stack<Token>();
+            int len = inputList.Count();
 
             for (int i = 0; i < len; i++)
             {
-                if (inp[i] is Variable)
+                if (inputList[i] is Variable)
                 {
                     Numbers variabl = new Numbers(variable);
                     list.Add(variabl);
                 }
-                else if (inp[i] is Numbers)
+                else if (inputList[i] is Numbers)
                 {
-                    list.Add(inp[i]);
+                    list.Add(inputList[i]);
                 }
                 else
                 {
-                    if (inp[i] is Parenthesis)
+                    if (inputList[i] is Parenthesis)
                     {
-                        if (((Parenthesis)inp[i]).IsOpen)
+                        if (((Parenthesis)inputList[i]).IsOpen)
                         {
-                            op.Push(inp[i]);
+                            operationStack.Push(inputList[i]);
                         }
                         else
                         {
-                            while (op.Peek() is Operation)
+                            while (operationStack.Peek() is Operation)
                             {
-                                list.Add(op.Pop());
+                                list.Add(operationStack.Pop());
                             }
-                            op.Pop();
+                            operationStack.Pop();
                         }
                     }
-                    else if (op.Count() > 0 && op.Peek() is Parenthesis)
+                    else if (operationStack.Count() > 0 && operationStack.Peek() is Parenthesis)
                     {
-                        op.Push(inp[i]);
+                        operationStack.Push(inputList[i]);
                     }
                     else
                     {
-                        Operation operation = (Operation)inp[i];
-                        if (op.Count() == 0)
+                        Operation operation = (Operation)inputList[i];
+                        if (operationStack.Count() == 0)
                         {
-                            op.Push(inp[i]);
+                            operationStack.Push(inputList[i]);
                         }
-                        else if ((Operation)op.Peek() >= operation)
+                        else if ((Operation)operationStack.Peek() >= operation)
                         {
-                            while (op.Count() != 0)
+                            while (operationStack.Count() != 0)
                             { 
-                                if ((Operation)op.Peek() >= operation)
+                                if ((Operation)operationStack.Peek() >= operation)
                                 {
-                                    list.Add(op.Pop());
+                                    list.Add(operationStack.Pop());
                                 }
                                 else
                                 {
                                     break;
                                 }
                             }
-                             op.Push(operation);
+                             operationStack.Push(operation);
                         }
                         else
                         {
-                            op.Push(operation);
+                            operationStack.Push(operation);
                         }
                     }
                 }
             }
-            while (op.Count() > 0)
+            while (operationStack.Count() > 0)
             {
-                list.Add(op.Pop());
+                list.Add(operationStack.Pop());
             }
             return list;
         }
 
         private  double GetResult(List<Token> expression)
         {
-            Stack<Numbers> number = new Stack<Numbers>();
+            Stack<Numbers> numberStack = new Stack<Numbers>();
 
             for (int i = 0; i < expression.Count(); i++)
             {
                 Token tocen = expression[i];
                 if (tocen is Numbers)
                 {
-                    Numbers num = tocen as Numbers;
-                    if (num.Number == 0)
+                    Numbers number = tocen as Numbers;
+                    if (number.Number == 0)
                     {
-                        number.Push(new Numbers(0));
+                        numberStack.Push(new Numbers(0));
                     }
                     else
                     {
-                        number.Push((Numbers)expression[i]);
+                        numberStack.Push((Numbers)expression[i]);
                     }
                 }
                 else if (tocen is Operation)
                 {
-                    Operation op = tocen as Operation;
-                    Numbers[] args = new Numbers[op.ArgsNumber];
-                    for (int j = op.ArgsNumber - 1; j >= 0; j--)
+                    Operation operation = tocen as Operation;
+                    Numbers[] args = new Numbers[operation.ArgsNumber];
+                    for (int j = operation.ArgsNumber - 1; j >= 0; j--)
                     {
-                        if (op.IsFunction)
+                        if (operation.IsFunction)
                         {
-                            if(number.Peek().Number <= op.MinValue || number.Peek().Number >= op.MaxValue || number.Peek().Number == op.NotEqual)
+                            if(numberStack.Peek().Number <= operation.MinValue || numberStack.Peek().Number >= operation.MaxValue || numberStack.Peek().Number == operation.NotEqual)
                             {
                                 return 999;
                             }
                         }
                         
-                        args[j] = number.Pop();
+                        args[j] = numberStack.Pop();
                     }
-                    Numbers result = op.Execute(args);
-                    number.Push(result);
+                    Numbers result = operation.Execute(args);
+                    numberStack.Push(result);
                 }
             }
-            return number.Pop().Number;
+            return numberStack.Pop().Number;
         }
     }
 }

@@ -38,24 +38,24 @@ namespace Wpf
 
             for (double i = xStart; i <= xEnd; i+= step)
             {
-                int x = (int)(i * scale);
-                int y = -1 * (int)Math.Round(calcul.RpnCulculate(i) * scale,MidpointRounding.ToNegativeInfinity);
+                int xThis = (int)(i * scale);
+                int yThis = -1 * (int)Math.Round(calcul.RpnCulculate(i) * scale,MidpointRounding.ToNegativeInfinity);
 
-                image = SetPixel(image, x, y, Colors.Red);
+                image = SetPixel(image, xThis, yThis, Colors.Red);
 
-                int xMath2 = ToUITransllate(x);
-                int yMath2 = ToUITransllate(y);
+                int xMath2 = ToUITransllate(xThis);
+                int yMath2 = ToUITransllate(yThis);
                 int xMath1 = ToUITransllate((int)((i - step) * scale));
                 int yMath1 = ToUITransllate(yPrevious);
 
-                if(i != xStart && yPrevious != -999*scale && y != -999 * scale)
+                if(i != xStart && yPrevious != -999*scale && yThis != -999 * scale)
                 {
                     image.DrawLineAa(xMath1, yMath1, xMath2, yMath2, Colors.Red);
 
-                    yMax = Math.Max(yMax, y);
-                    yMin = Math.Min(yMin, y);
+                    yMax = Math.Max(yMax, yThis);
+                    yMin = Math.Min(yMin, yThis);
                 }
-                yPrevious = y;
+                yPrevious = yThis;
             }
 
             image = DrowSerifs(image, yMin, yMax, step*scale,'y');

@@ -25,8 +25,8 @@ namespace Wpf
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Painter painter = new Painter(ImGraph.Width);
-            double[] array = painter.GetArray(TxBStart.Text, TxBEnd.Text, TxBStep.Text, TxBScale.Text);
-            WriteableBitmap bitmap = painter.Paint(TxBInput.Text, array); 
+            double[] arrayInput = painter.GetArray(TxBStart.Text, TxBEnd.Text, TxBStep.Text, TxBScale.Text);
+            WriteableBitmap bitmap = painter.Paint(TxBInput.Text, arrayInput); 
             ImGraph.Source = bitmap;
         }
     }
