@@ -66,7 +66,6 @@ namespace RpnLogic
                 {
                     string str = GetOperation(inputStr, i);
                     Operation operation = CreateOperation(str);
-                    operation = operation.ChangePriority(priority);
                     i += str.Length - 1;
                     list.Add(operation);
                 }
@@ -91,7 +90,6 @@ namespace RpnLogic
                     else
                     {
                         Operation operation = CreateOperation(inputStr[i].ToString());
-                        operation = operation.ChangePriority(priority);
                         list.Add(operation);
                     }
                 }
@@ -158,7 +156,7 @@ namespace RpnLogic
         private  List<Token> ToRpn(List<Token> inputList, double variable)
         {
             List<Token> list = new List<Token>();
-            Stack<Token> operationStack = new Stack<Token>();
+            Stack<Token> tokenStack = new Stack<Token>();
             int len = inputList.Count();
 
             for (int i = 0; i < len; i++)
@@ -172,59 +170,51 @@ namespace RpnLogic
                 {
                     list.Add(inputList[i]);
                 }
-                else
+                else if (inputList[i] is Parenthesis)
                 {
-                    if (inputList[i] is Parenthesis)
+                    if (((Parenthesis)inputList[i]).IsOpen)
                     {
-                        if (((Parenthesis)inputList[i]).IsOpen)
-                        {
-                            operationStack.Push(inputList[i]);
-                        }
-                        else
-                        {
-                            while (operationStack.Peek() is Operation)
-                            {
-                                list.Add(operationStack.Pop());
-                            }
-                            operationStack.Pop();
-                        }
-                    }
-                    else if (operationStack.Count() > 0 && operationStack.Peek() is Parenthesis)
-                    {
-                        operationStack.Push(inputList[i]);
+                        tokenStack.Push(inputList[i]);
                     }
                     else
                     {
-                        Operation operation = (Operation)inputList[i];
-                        if (operationStack.Count() == 0)
+                        while (tokenStack.Peek() is Operation)
                         {
-                            operationStack.Push(inputList[i]);
+                            list.Add(tokenStack.Pop());
                         }
-                        else if ((Operation)operationStack.Peek() >= operation)
-                        {
-                            while (operationStack.Count() != 0)
-                            { 
-                                if (operationStack is Operation && (Operation)operationStack.Peek() >= operation)
-                                {
-                                    list.Add(operationStack.Pop());
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                             operationStack.Push(operation);
-                        }
-                        else
-                        {
-                            operationStack.Push(operation);
-                        }
+                        tokenStack.Pop();
                     }
                 }
+                else
+                {
+                    if (tokenStack.Count == 0 || !(tokenStack.Peek() is Operation))
+                    {
+                        tokenStack.Push(inputList[i]);
+                        continue;
+                    }
+
+                    Operation operation = inputList[i] as Operation;
+
+                    if ((tokenStack.Peek() as Operation) >= operation)
+                    {
+                        while (tokenStack.Count > 0 && tokenStack.Peek() is Operation)
+                        {
+                            if ((Operation)tokenStack.Peek() >= operation)
+                            {
+                                list.Add(tokenStack.Pop());
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    tokenStack.Push(operation); 
+                }   
             }
-            while (operationStack.Count() > 0)
+            while (tokenStack.Count() > 0)
             {
-                list.Add(operationStack.Pop());
+                list.Add(tokenStack.Pop());
             }
             return list;
         }

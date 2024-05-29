@@ -10,29 +10,17 @@ namespace RpnLogic
         public abstract double MinValue { get; }
         public abstract double MaxValue { get; }
         public abstract double NotEqual { get; }
-        private int Priority0;
-
-        private void SetPriority(int priority)
-        {
-            Priority0 = priority;
-        }
-
-        public Operation ChangePriority(int priority)
-        {
-            this.SetPriority(priority);
-            return(this);
-        }
 
         public abstract Numbers Execute(params Numbers[] numbers);
 
         public static bool operator >=(Operation left, Operation right)
         {
-            return left.Priority + left.Priority0 >= right.Priority + right.Priority0;
+            return left.Priority  >= right.Priority;
         }
 
         public static bool operator <=(Operation left, Operation right)
         {
-            return (left.Priority + left.Priority0 <= right.Priority + right.Priority0);
+            return (left.Priority  <= right.Priority);
         }
     }
 }
